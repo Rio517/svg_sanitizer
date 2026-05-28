@@ -10,5 +10,17 @@ name = "svg_hush_nif"
 crate-type = ["cdylib"]
 
 [dependencies]
-rustler = "0.38"
+# default-features = false so we don't pin a NIF version implicitly;
+# the active version is selected by the feature flags below.
+rustler = { version = "0.38", default-features = false }
 svg-hush = "0.9"
+
+# Rustler >=0.30 requires every consumer crate to declare which NIF
+# versions it supports as explicit features. CI builds each matrix entry
+# with `--features nif_version_<X>_<Y>`; `default` is the highest version
+# so a plain `cargo build` (local force-build) targets the current OTP.
+[features]
+default = ["nif_version_2_17"]
+nif_version_2_15 = ["rustler/nif_version_2_15"]
+nif_version_2_16 = ["rustler/nif_version_2_16"]
+nif_version_2_17 = ["rustler/nif_version_2_17"]
