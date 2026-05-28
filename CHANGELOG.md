@@ -14,3 +14,4 @@ Rust crate (v0.9).
 - Precompiled artifacts published for `aarch64-apple-darwin`,
   `x86_64-apple-darwin`, `aarch64-unknown-linux-gnu`,
   `x86_64-unknown-linux-gnu`.
+- Requires OTP 27+ (NIF 2.17); earlier NIF versions added on demand.

@@ -17,7 +17,7 @@ defmodule SvgHush.Native do
       x86_64-unknown-linux-gnu
     ),
     version: version,
-    nif_versions: ["2.16", "2.17"]
+    nif_versions: ["2.17"]
 
   # Implementation lives in native/svg_hush_nif (Rust). The function below
   # is replaced at load time by the NIF; this stub exists so the module

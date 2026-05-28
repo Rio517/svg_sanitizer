@@ -15,14 +15,11 @@ crate-type = ["cdylib"]
 rustler = { version = "0.38", default-features = false }
 svg-hush = "0.9"
 
-# Rustler >=0.30 requires every consumer crate to declare which NIF
-# versions it supports as explicit features. NO default is set on
-# purpose: rustler's mix integration passes --features matching the
-# current OTP's NIF version at compile time, and rustler_precompiled-action
-# passes the right --features per matrix entry. Having a default here would
-# leave a second nif_version feature active and fail the precompile sanity
-# check ("desired feature is not equal to the highest active").
+# Rustler >=0.30 requires the consumer crate to declare which NIF version
+# it targets. v0.1 supports a single NIF version (2.17, OTP 27+) so the
+# default and the CI matrix flag agree -- no "highest active != desired"
+# conflict. Adding 2.16/2.15 later means listing the feature here, in
+# release.yml's matrix, and in lib/svg_hush/native.ex's :nif_versions.
 [features]
-nif_version_2_15 = ["rustler/nif_version_2_15"]
-nif_version_2_16 = ["rustler/nif_version_2_16"]
+default = ["nif_version_2_17"]
 nif_version_2_17 = ["rustler/nif_version_2_17"]

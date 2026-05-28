@@ -28,6 +28,8 @@ Precompiled artifacts are published to GitHub releases for these targets;
 - `aarch64-unknown-linux-gnu`
 - `x86_64-unknown-linux-gnu`
 
+**OTP 27+ required** (NIF 2.17). Earlier NIF versions will be added on demand.
+
 Set `SVG_HUSH_BUILD=1` to force a local source build (requires `cargo`).
 
 ## Usage
