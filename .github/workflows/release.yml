@@ -25,6 +25,18 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Install GNU tar on macOS
+        if: runner.os == 'macOS'
+        # rustler-precompiled-action installs a cross-tarball via
+        # `tar --wildcards`, which BSD tar (macOS default) does not
+        # support. Putting GNU tar first on PATH makes the same
+        # invocation work on the macOS runners.
+        run: |
+          brew install gnu-tar
+          # brew --prefix resolves /opt/homebrew on Apple Silicon and
+          # /usr/local on Intel; either way gnubin precedes the BSD tar.
+          echo "$(brew --prefix gnu-tar)/libexec/gnubin" >> "$GITHUB_PATH"
+
       - name: Derive crate version from tag
         id: ver
         shell: bash
