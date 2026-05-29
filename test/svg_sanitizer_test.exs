@@ -112,9 +112,10 @@ defmodule SvgSanitizerTest do
     end
 
     test "oversize binary → {:error, :input_too_large} without parsing" do
-      # 5 MB + 1 byte. The guard is byte_size > @max_bytes so this is the
-      # smallest payload that should be rejected at the size gate.
-      payload = <<0::size(5 * 1024 * 1024 * 8 + 8)>>
+      # 5 MB + 1 byte — smallest payload past the byte_size > @max_bytes
+      # gate. :binary.copy makes the intent ("generate a 5 MB+1 binary")
+      # obvious vs. an inline `<< 0 :: size(...) >>` bit literal.
+      payload = :binary.copy(<<0>>, 5 * 1024 * 1024 + 1)
       assert SvgSanitizer.sanitize(payload) == {:error, :input_too_large}
     end
 

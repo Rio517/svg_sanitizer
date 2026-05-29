@@ -20,7 +20,7 @@ rustler = { version = "0.38", default-features = false }
 svg-hush = "=0.9.6"
 
 # Rustler >=0.30 requires the consumer crate to declare which NIF version
-# it targets. v0.1 supports a single NIF version (2.17, OTP 27+) so the
+# it targets. v0.1 supports a single NIF version (2.17, OTP 26+) so the
 # default and the CI matrix flag agree -- no "highest active != desired"
 # conflict. Adding 2.16/2.15 later means listing the feature here, in
 # release.yml's matrix, and in lib/svg_sanitizer/native.ex's :nif_versions.

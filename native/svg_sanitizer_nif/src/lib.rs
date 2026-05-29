@@ -1,6 +1,6 @@
 // svg_sanitizer NIF — wraps Cloudflare's `svg-hush` Rust crate.
 //
-// Public function: sanitize(binary) -> {:ok, binary} | {:error, term}.
+// Public function: sanitize(binary) -> {:ok, binary} | {:error, atom}.
 //
 // Runs on a DirtyCpu scheduler because sanitization is CPU-bound and may
 // take longer than the BEAM's 1ms scheduler budget on large SVGs.
