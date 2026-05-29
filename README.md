@@ -23,12 +23,15 @@ end
 Precompiled artifacts are published to GitHub releases for these targets;
 `mix deps.get` downloads the right one — no Rust toolchain required:
 
-- `aarch64-apple-darwin`
-- `x86_64-apple-darwin`
 - `aarch64-unknown-linux-gnu`
 - `x86_64-unknown-linux-gnu`
 
 **OTP 27+ required** (NIF 2.17). Earlier NIF versions will be added on demand.
+
+**macOS users:** v0.1 doesn't ship precompiled macOS artifacts (the
+`rustler-precompiled-action` mishandles `cross` on Apple Silicon; tracked
+for v0.2). Build from source by setting `SVG_HUSH_BUILD=1`; you'll need
+`cargo` installed.
 
 Set `SVG_HUSH_BUILD=1` to force a local source build (requires `cargo`).
 

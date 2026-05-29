@@ -24,6 +24,10 @@ svg_hush-*.tar
 
 # Rust artifacts
 /native/svg_hush_nif/target/
+/native/svg_hush_nif/Cargo.lock
+
+# Compiled NIF dylib written here when force-building locally.
+/priv/
 
 # macOS
 .DS_Store

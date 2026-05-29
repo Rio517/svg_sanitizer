@@ -10,9 +10,12 @@ defmodule SvgHush.Native do
     crate: "svg_hush_nif",
     base_url: "#{github_url}/releases/download/v#{version}",
     force_build: System.get_env("SVG_HUSH_BUILD") in ["1", "true"],
+    # v0.1 ships precompiled artifacts for Linux only — the prod deploy target.
+    # macOS targets are deferred: rustler-precompiled-action v1.1.5 unconditionally
+    # installs the `cross` tool, which won't run on Apple Silicon and queues
+    # forever on macos-13 Intel. Mac dev users set SVG_HUSH_BUILD=1 (requires
+    # cargo). Adding macOS targets back will revisit the action.
     targets: ~w(
-      aarch64-apple-darwin
-      x86_64-apple-darwin
       aarch64-unknown-linux-gnu
       x86_64-unknown-linux-gnu
     ),
