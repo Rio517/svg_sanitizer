@@ -146,6 +146,12 @@ cd /Users/marioflores/code/svg_hush
 SVG_SANITIZER_BUILD=1 mix hex.publish --yes
 ```
 
+`SVG_SANITIZER_BUILD=1` is **required** on macOS — `RustlerPrecompiled`
+verifies the host has a matching precompiled artifact before building
+the tarball, and v0.1.x ships Linux-only artifacts. Without the env
+var you get `precompiled NIF is not available for this target:
+"aarch64-apple-darwin"` and the build aborts.
+
 `--yes` skips the y/n confirmation but does **not** skip the TOTP prompt. Enter the 6-digit code from your authenticator app.
 
 Wait for `Package published to https://hex.pm/packages/svg_sanitizer/X.Y.Z`.
