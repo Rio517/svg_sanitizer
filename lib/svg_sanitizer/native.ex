@@ -20,6 +20,7 @@ defmodule SvgSanitizer.Native do
       x86_64-unknown-linux-gnu
     ),
     version: version,
+    # NIF 2.17 ships with OTP 26+. Earlier NIF versions are added on demand.
     nif_versions: ["2.17"]
 
   # Implementation lives in native/svg_sanitizer_nif (Rust). The function below

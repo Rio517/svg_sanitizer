@@ -26,7 +26,8 @@ jobs:
             deps
             _build
             native/svg_sanitizer_nif/target
-          key: ${{ runner.os }}-mix-${{ hashFiles('mix.lock', 'native/svg_sanitizer_nif/Cargo.toml') }}
+          # Cargo.lock included so transitive Rust bumps invalidate the cache.
+          key: ${{ runner.os }}-mix-${{ hashFiles('mix.lock', 'native/svg_sanitizer_nif/Cargo.toml', 'native/svg_sanitizer_nif/Cargo.lock') }}
           restore-keys: ${{ runner.os }}-mix-
 
       - run: mix deps.get

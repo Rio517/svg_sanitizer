@@ -103,8 +103,35 @@ defmodule SvgSanitizerTest do
     assert String.contains?(out_str, "data:image/png")
   end
 
-  test "returns a tagged tuple for non-XML garbage rather than crashing" do
-    result = SvgSanitizer.sanitize(<<0, 1, 2, 3, 0xFF>>)
-    assert match?({:ok, _}, result) or match?({:error, _}, result)
+  describe "rejection paths" do
+    test "non-binary input → {:error, :invalid_input}" do
+      for bad <- [nil, :svg, 42, %{}, [<<"svg">>], {1, 2}] do
+        assert SvgSanitizer.sanitize(bad) == {:error, :invalid_input},
+               "expected :invalid_input for #{inspect(bad)}"
+      end
+    end
+
+    test "oversize binary → {:error, :input_too_large} without parsing" do
+      # 5 MB + 1 byte. The guard is byte_size > @max_bytes so this is the
+      # smallest payload that should be rejected at the size gate.
+      payload = <<0::size(5 * 1024 * 1024 * 8 + 8)>>
+      assert SvgSanitizer.sanitize(payload) == {:error, :input_too_large}
+    end
+
+    test "binary garbage that isn't XML → {:error, :parse_error}, never {:ok, _}" do
+      # The pre-hardening test accepted {:ok, _} as a valid response for
+      # binary garbage. That left room for a silent sanitization bypass on
+      # non-SVG bytes: producing :ok with empty/partial output. Now we
+      # assert the error path explicitly.
+      assert {:error, :parse_error} = SvgSanitizer.sanitize(<<0, 1, 2, 3, 0xFF>>)
+      assert {:error, :parse_error} = SvgSanitizer.sanitize("not xml at all")
+    end
+
+    test "empty binary → {:error, :parse_error}" do
+      # svg-hush requires actual XML content; an empty body is not a
+      # well-formed SVG and should round-trip as an error, not :ok with
+      # an empty payload.
+      assert {:error, :parse_error} = SvgSanitizer.sanitize("")
+    end
   end
 end

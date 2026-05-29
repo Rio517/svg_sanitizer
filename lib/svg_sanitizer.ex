@@ -16,20 +16,55 @@ defmodule SvgSanitizer do
   and arbitrary data: types) are stripped.
 
   The NIF runs on a dirty CPU scheduler so a slow sanitization does not
-  block normal schedulers, and surfaces parse/IO errors as `{:error, term}`
+  block normal schedulers, and surfaces parse/IO errors as `{:error, atom}`
   rather than crashing the VM.
   """
 
   alias SvgSanitizer.Native
 
+  @max_bytes 5 * 1024 * 1024
+
+  @typedoc """
+  Why sanitization didn't yield a clean binary. Always an atom — stable
+  for pattern matching, doesn't leak internal parser state.
+
+    * `:invalid_input`   — input wasn't a binary.
+    * `:input_too_large` — input over #{@max_bytes} bytes; rejected without parsing.
+    * `:parse_error`     — svg-hush rejected the input (malformed XML,
+      unsupported encoding, etc.). Treat as "reject this upload".
+    * `:panic`           — Rust layer panicked (caught at the NIF boundary,
+      BEAM unaffected). Stack overflow is *not* caught and aborts the node;
+      svg-hush's iterative parser keeps stack usage bounded in practice.
+    * `:alloc_failed`    — out of memory while copying the sanitized output.
+  """
+  @type reason ::
+          :invalid_input
+          | :input_too_large
+          | :parse_error
+          | :panic
+          | :alloc_failed
+
   @doc """
   Returns a sanitized copy of the given SVG.
 
-  Accepts the SVG as a binary. Returns `{:ok, sanitized_binary}` on success
-  or `{:error, reason}` if `svg-hush` rejects the input as unparseable.
+  Accepts a binary up to #{@max_bytes} bytes. Returns `{:ok, sanitized_binary}`
+  on success, `{:error, reason}` on rejection. See `t:reason/0` for the
+  full set of error atoms.
+
+  Always handle `{:error, _}`. Non-binary input, oversized input, malformed
+  XML, and adversarial payloads all land there; pattern-matching only on
+  `{:ok, _}` is a `MatchError` waiting to happen.
   """
-  @spec sanitize(binary()) :: {:ok, binary()} | {:error, term()}
+  @spec sanitize(term()) :: {:ok, binary()} | {:error, reason()}
+  def sanitize(svg) when is_binary(svg) and byte_size(svg) > @max_bytes do
+    {:error, :input_too_large}
+  end
+
   def sanitize(svg) when is_binary(svg) do
     Native.sanitize(svg)
+  end
+
+  def sanitize(_other) do
+    {:error, :invalid_input}
   end
 end

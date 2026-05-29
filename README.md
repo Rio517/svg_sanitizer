@@ -26,7 +26,7 @@ Precompiled artifacts are published to GitHub releases for these targets;
 - `aarch64-unknown-linux-gnu`
 - `x86_64-unknown-linux-gnu`
 
-**OTP 27+ required** (NIF 2.17). Earlier NIF versions will be added on demand.
+**OTP 26+ required** (NIF 2.17). Earlier NIF versions will be added on demand.
 
 **macOS users:** v0.1 doesn't ship precompiled macOS artifacts (the
 `rustler-precompiled-action` mishandles `cross` on Apple Silicon; tracked
@@ -36,11 +36,25 @@ for v0.2). Build from source by setting `SVG_SANITIZER_BUILD=1`; you'll need
 ## Usage
 
 ```elixir
-{:ok, clean} = SvgSanitizer.sanitize(user_uploaded_svg)
+case SvgSanitizer.sanitize(user_uploaded_svg) do
+  {:ok, clean} ->
+    store_asset(clean)
+
+  {:error, reason} ->
+    # reason is one of:
+    #   :invalid_input    — input wasn't a binary
+    #   :input_too_large  — over 5 MB; rejected without parsing
+    #   :parse_error      — svg-hush rejected as malformed
+    #   :panic            — Rust layer panicked (caught, BEAM safe)
+    #   :alloc_failed     — out of memory while building output
+    Logger.warning("svg sanitize failed: #{reason}")
+    reject_upload(reason)
+end
 ```
 
-Returns `{:ok, binary}` on success or `{:error, reason}` if `svg-hush`
-rejects the input.
+Always handle `{:error, _}`. SVG input from users *will* hit one of those
+branches eventually; pattern-matching only on `{:ok, _}` is a `MatchError`
+waiting to happen.
 
 ## Why a separate package
 

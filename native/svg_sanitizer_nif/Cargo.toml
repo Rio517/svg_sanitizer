@@ -13,7 +13,11 @@ crate-type = ["cdylib"]
 # default-features = false so we don't pin a NIF version implicitly;
 # the active version is selected by the feature flags below.
 rustler = { version = "0.38", default-features = false }
-svg-hush = "0.9"
+# Pinned exactly so any svg-hush bump goes through a deliberate review —
+# this crate is the entire XSS-defense surface. To upgrade: bump here,
+# regenerate Cargo.lock, re-run cargo audit, then re-run the XSS test
+# suite (test/svg_sanitizer_test.exs) against the new version.
+svg-hush = "=0.9.6"
 
 # Rustler >=0.30 requires the consumer crate to declare which NIF version
 # it targets. v0.1 supports a single NIF version (2.17, OTP 27+) so the
