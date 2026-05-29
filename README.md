@@ -1,4 +1,4 @@
-# SvgHush
+# SvgSanitizer
 
 Vetted SVG sanitizer for Elixir. Thin precompiled NIF wrapping Cloudflare's
 [`svg-hush`](https://crates.io/crates/svg-hush) Rust crate, so applications
@@ -15,7 +15,7 @@ The NIF runs on a dirty CPU scheduler and converts Rust panics into
 ```elixir
 def deps do
   [
-    {:svg_hush, "~> 0.1"}
+    {:svg_sanitizer, "~> 0.1"}
   ]
 end
 ```
@@ -30,15 +30,13 @@ Precompiled artifacts are published to GitHub releases for these targets;
 
 **macOS users:** v0.1 doesn't ship precompiled macOS artifacts (the
 `rustler-precompiled-action` mishandles `cross` on Apple Silicon; tracked
-for v0.2). Build from source by setting `SVG_HUSH_BUILD=1`; you'll need
+for v0.2). Build from source by setting `SVG_SANITIZER_BUILD=1`; you'll need
 `cargo` installed.
-
-Set `SVG_HUSH_BUILD=1` to force a local source build (requires `cargo`).
 
 ## Usage
 
 ```elixir
-{:ok, clean} = SvgHush.sanitize(user_uploaded_svg)
+{:ok, clean} = SvgSanitizer.sanitize(user_uploaded_svg)
 ```
 
 Returns `{:ok, binary}` on success or `{:error, reason}` if `svg-hush`

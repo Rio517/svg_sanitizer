@@ -1,4 +1,4 @@
-// SvgHush NIF — wraps Cloudflare's `svg-hush` Rust crate.
+// svg_sanitizer NIF — wraps Cloudflare's `svg-hush` Rust crate.
 //
 // Public function: sanitize(binary) -> {:ok, binary} | {:error, term}.
 //
@@ -46,4 +46,4 @@ fn sanitize<'a>(env: Env<'a>, svg: Binary<'a>) -> Term<'a> {
     }
 }
 
-rustler::init!("Elixir.SvgHush.Native");
+rustler::init!("Elixir.SvgSanitizer.Native");

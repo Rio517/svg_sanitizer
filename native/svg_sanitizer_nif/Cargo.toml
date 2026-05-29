@@ -1,12 +1,12 @@
 [package]
-name = "svg_hush_nif"
+name = "svg_sanitizer_nif"
 version = "0.1.0"
 edition = "2021"
 license = "Apache-2.0"
 publish = false
 
 [lib]
-name = "svg_hush_nif"
+name = "svg_sanitizer_nif"
 crate-type = ["cdylib"]
 
 [dependencies]
@@ -19,7 +19,7 @@ svg-hush = "0.9"
 # it targets. v0.1 supports a single NIF version (2.17, OTP 27+) so the
 # default and the CI matrix flag agree -- no "highest active != desired"
 # conflict. Adding 2.16/2.15 later means listing the feature here, in
-# release.yml's matrix, and in lib/svg_hush/native.ex's :nif_versions.
+# release.yml's matrix, and in lib/svg_sanitizer/native.ex's :nif_versions.
 [features]
 default = ["nif_version_2_17"]
 nif_version_2_17 = ["rustler/nif_version_2_17"]

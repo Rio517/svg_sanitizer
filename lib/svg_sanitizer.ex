@@ -1,4 +1,4 @@
-defmodule SvgHush do
+defmodule SvgSanitizer do
   @moduledoc """
   Vetted SVG sanitizer for Elixir.
 
@@ -9,7 +9,7 @@ defmodule SvgHush do
 
   ## Example
 
-      iex> {:ok, _clean} = SvgHush.sanitize("<svg xmlns='http://www.w3.org/2000/svg'/>")
+      iex> {:ok, _clean} = SvgSanitizer.sanitize("<svg xmlns='http://www.w3.org/2000/svg'/>")
 
   Embedded raster data URLs (PNG/JPEG/GIF/WebP) are preserved so sanitized
   SVGs remain self-contained; all other URL schemes (including javascript:
@@ -20,7 +20,7 @@ defmodule SvgHush do
   rather than crashing the VM.
   """
 
-  alias SvgHush.Native
+  alias SvgSanitizer.Native
 
   @doc """
   Returns a sanitized copy of the given SVG.

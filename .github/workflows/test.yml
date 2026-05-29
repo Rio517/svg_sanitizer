@@ -25,13 +25,13 @@ jobs:
           path: |
             deps
             _build
-            native/svg_hush_nif/target
-          key: ${{ runner.os }}-mix-${{ hashFiles('mix.lock', 'native/svg_hush_nif/Cargo.toml') }}
+            native/svg_sanitizer_nif/target
+          key: ${{ runner.os }}-mix-${{ hashFiles('mix.lock', 'native/svg_sanitizer_nif/Cargo.toml') }}
           restore-keys: ${{ runner.os }}-mix-
 
       - run: mix deps.get
 
       - name: Compile + run malicious-SVG corpus tests
         env:
-          SVG_HUSH_BUILD: "1"
+          SVG_SANITIZER_BUILD: "1"
         run: mix test --warnings-as-errors

@@ -1,19 +1,19 @@
-defmodule SvgHush.MixProject do
+defmodule SvgSanitizer.MixProject do
   use Mix.Project
 
   @version "0.1.0"
-  @source_url "https://github.com/Rio517/svg_hush"
+  @source_url "https://github.com/Rio517/svg_sanitizer"
 
   def project do
     [
-      app: :svg_hush,
+      app: :svg_sanitizer,
       version: @version,
       elixir: "~> 1.15",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
       description: description(),
       package: package(),
-      name: "svg_hush",
+      name: "svg_sanitizer",
       source_url: @source_url,
       docs: docs()
     ]
@@ -45,10 +45,9 @@ defmodule SvgHush.MixProject do
       links: %{"GitHub" => @source_url},
       files: ~w(
         lib
-        native/svg_hush_nif/src
-        native/svg_hush_nif/Cargo.toml
-        native/svg_hush_nif/Cargo.lock
-        native/svg_hush_nif/.cargo
+        native/svg_sanitizer_nif/src
+        native/svg_sanitizer_nif/Cargo.toml
+        native/svg_sanitizer_nif/Cargo.lock
         checksum-*.exs
         mix.exs
         README.md

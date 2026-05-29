@@ -20,11 +20,11 @@ erl_crash.dump
 *.ez
 
 # Ignore package tarball (built via "mix hex.build").
-svg_hush-*.tar
+svg_sanitizer-*.tar
 
 # Rust artifacts
-/native/svg_hush_nif/target/
-/native/svg_hush_nif/Cargo.lock
+/native/svg_sanitizer_nif/target/
+/native/svg_sanitizer_nif/Cargo.lock
 
 # Compiled NIF dylib written here when force-building locally.
 /priv/

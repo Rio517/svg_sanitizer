@@ -16,26 +16,15 @@ jobs:
       fail-fast: false
       matrix:
         nif: ["2.17"]
+        # v0.1 ships Linux-only precompiled artifacts. macOS deferred to v0.2
+        # once we sort the rustler-precompiled-action `cross`-on-Apple-Silicon
+        # issue + macos-13 queue flakes.
         job:
-          - { target: aarch64-apple-darwin, os: macos-14 }
-          - { target: x86_64-apple-darwin, os: macos-13 }
           - { target: x86_64-unknown-linux-gnu, os: ubuntu-22.04, use-cross: false }
           - { target: aarch64-unknown-linux-gnu, os: ubuntu-22.04, use-cross: true }
 
     steps:
       - uses: actions/checkout@v4
-
-      - name: Install GNU tar on macOS
-        if: runner.os == 'macOS'
-        # rustler-precompiled-action installs a cross-tarball via
-        # `tar --wildcards`, which BSD tar (macOS default) does not
-        # support. Putting GNU tar first on PATH makes the same
-        # invocation work on the macOS runners.
-        run: |
-          brew install gnu-tar
-          # brew --prefix resolves /opt/homebrew on Apple Silicon and
-          # /usr/local on Intel; either way gnubin precedes the BSD tar.
-          echo "$(brew --prefix gnu-tar)/libexec/gnubin" >> "$GITHUB_PATH"
 
       - name: Derive crate version from tag
         id: ver
@@ -58,12 +47,12 @@ jobs:
         id: build-crate
         uses: philss/rustler-precompiled-action@v1.1.5
         with:
-          project-name: svg_hush_nif
+          project-name: svg_sanitizer_nif
           project-version: ${{ steps.ver.outputs.version }}
           target: ${{ matrix.job.target }}
           nif-version: ${{ matrix.nif }}
           use-cross: ${{ matrix.job.use-cross == true }}
-          project-dir: "native/svg_hush_nif"
+          project-dir: "native/svg_sanitizer_nif"
 
       - name: Upload as workflow artifact
         uses: actions/upload-artifact@v4

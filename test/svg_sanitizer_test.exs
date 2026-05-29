@@ -1,4 +1,4 @@
-defmodule SvgHushTest do
+defmodule SvgSanitizerTest do
   use ExUnit.Case, async: true
 
   # Each malicious SVG is paired with a `forbidden` pattern that MUST NOT appear
@@ -68,7 +68,7 @@ defmodule SvgHushTest do
       # The contract is "dangerous content never makes it through." Either
       # stripping (sanitized output without the forbidden token) or outright
       # rejection of malformed input satisfies that — both count as safe.
-      case SvgHush.sanitize(unquote(input)) do
+      case SvgSanitizer.sanitize(unquote(input)) do
         {:ok, output} ->
           output_str = IO.iodata_to_binary(output)
 
@@ -84,7 +84,7 @@ defmodule SvgHushTest do
   test "passes through a benign svg" do
     svg = ~S|<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10"><rect width="10" height="10" fill="black"/></svg>|
 
-    assert {:ok, output} = SvgHush.sanitize(svg)
+    assert {:ok, output} = SvgSanitizer.sanitize(svg)
     out_str = IO.iodata_to_binary(output)
     assert String.contains?(out_str, "rect")
     assert String.contains?(out_str, "black")
@@ -98,13 +98,13 @@ defmodule SvgHushTest do
     svg =
       ~s|<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1 1"><image href="#{png_data_url}" width="1" height="1"/></svg>|
 
-    assert {:ok, output} = SvgHush.sanitize(svg)
+    assert {:ok, output} = SvgSanitizer.sanitize(svg)
     out_str = IO.iodata_to_binary(output)
     assert String.contains?(out_str, "data:image/png")
   end
 
   test "returns a tagged tuple for non-XML garbage rather than crashing" do
-    result = SvgHush.sanitize(<<0, 1, 2, 3, 0xFF>>)
+    result = SvgSanitizer.sanitize(<<0, 1, 2, 3, 0xFF>>)
     assert match?({:ok, _}, result) or match?({:error, _}, result)
   end
 end
