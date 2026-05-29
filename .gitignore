@@ -24,7 +24,6 @@ svg_sanitizer-*.tar
 
 # Rust artifacts
 /native/svg_sanitizer_nif/target/
-/native/svg_sanitizer_nif/Cargo.lock
 
 # Compiled NIF dylib written here when force-building locally.
 /priv/
